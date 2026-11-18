@@ -154,12 +154,36 @@
       '<span>' + esc(i.titlu) + '</span></summary><div class="body">' + body + '</div></details></li>';
   }
 
+  /* ---------------- bara de rezultat (telefon) ---------------- */
+  var bar = document.getElementById('bar');
+  var resultsEl = document.getElementById('results');
+  var rezultatVizibil = false;
+  function updateBar(rez) {
+    if (!bar) return;
+    var c = rez.counts;
+    bar.className = 'bar ' + rez.verdict;
+    document.getElementById('barT').textContent = rez.titlu;
+    document.getElementById('barS').textContent = rez.verdict === 'incomplet'
+      ? 'Completați datele obligatorii'
+      : c.fail + ' neconforme · ' + c.warn + ' atenție · ' + c.todo + ' de confirmat';
+    verificaBara();
+  }
+  function verificaBara() {
+    if (!bar || !resultsEl || !window.__ultimulRezultat) return;
+    // bara dispare când începutul rezultatului a ajuns în ecran
+    rezultatVizibil = resultsEl.getBoundingClientRect().top < window.innerHeight - 140;
+    bar.hidden = rezultatVizibil && window.matchMedia('(max-width: 979px)').matches;
+  }
+  window.addEventListener('scroll', verificaBara, { passive: true });
+  window.addEventListener('resize', verificaBara);
+
   function render() {
     var vals = readForm();
     updateVisibility(vals);
     save(vals);
     var rez = R.evaluate(vals);
     window.__ultimulRezultat = { vals: vals, rez: rez };
+    updateBar(rez);
 
     var h = '<div class="res-card">';
     h += '<div class="verdict ' + rez.verdict + '"><h2>' + esc(rez.titlu) + '</h2><p>' + esc(rez.text) + '</p></div>';
