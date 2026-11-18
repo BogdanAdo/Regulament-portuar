@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verificator Regulament Portuar</title>
+  <meta name="description" content="Verifică dacă o manevră de navă respectă Regulamentul Portuar al porturilor maritime românești (CN APM Constanța, ed. 2025): pilotaj, remorcaj, zi/noapte, vânt, dană.">
+  <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-in">
+      <div>
+        <h1>Verificator manevre – Regulament Portuar</h1>
+        <p class="sub">Pilotaj, remorcaj, program zi/noapte, vânt și dană, verificate pe articolele Regulamentului Portuar al porturilor maritime românești (CN APM SA Constanța, ediția 2025).</p>
+      </div>
+      <div class="top-actions">
+        <button type="button" class="btn" id="btnReset">Resetează</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap notice" role="note">
+    <strong>Instrument de sprijin.</strong> Nu înlocuiește regulamentul în vigoare, indicațiile Autorității Navale Române / VTS / Căpităniei de Port, ale pilotului sau decizia comandantului. Verificați întotdeauna versiunea actuală a regulamentului.
+  </div>
+
+  <noscript><div class="wrap notice">Aplicația are nevoie de JavaScript.</div></noscript>
+
+  <main class="wrap layout">
+    <form id="form" class="form" autocomplete="off" novalidate>
+
+      <section class="card presets">
+        <h2>Exemple rapide</h2>
+        <div class="chips" id="presets"></div>
+      </section>
+
+      <fieldset class="card">
+        <legend>1 · Nava</legend>
+        <div class="field">
+          <label for="tipNava">Tip navă</label>
+          <select id="tipNava" name="tipNava"></select>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="loa">Lungime maximă LOA (m)</label>
+            <input id="loa" name="loa" type="number" inputmode="decimal" step="0.1" min="0">
+          </div>
+          <div class="field">
+            <label for="pescaj">Pescaj (m)</label>
+            <input id="pescaj" name="pescaj" type="number" inputmode="decimal" step="0.1" min="0">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="trn">TRN <span class="opt">opțional</span></label>
+            <input id="trn" name="trn" type="number" inputmode="decimal" step="1" min="0">
+          </div>
+          <div class="field">
+            <label for="dwt">Capacitate tdw <span class="opt">opțional</span></label>
+            <input id="dwt" name="dwt" type="number" inputmode="decimal" step="1" min="0">
+          </div>
+        </div>
+        <label class="check"><input type="checkbox" name="propulsoareTransversale"> Are propulsoare transversale funcționale</label>
+        <label class="check"><input type="checkbox" name="marfaPericuloasa"> Transportă produse petroliere / mărfuri periculoase</label>
+        <div data-show="fluvial" class="sub-block">
+          <label class="check"><input type="checkbox" name="propulsata" checked> Navă propulsată</label>
+          <div class="field">
+            <label for="ofiteriBrevetati">Ofițeri cu brevet maritim-portuar sau căpitan fluvial A la bord</label>
+            <select id="ofiteriBrevetati" name="ofiteriBrevetati" data-tri></select>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="card">
+        <legend>2 · Manevra</legend>
+        <div class="field">
+          <label for="manevra">Tip manevră</label>
+          <select id="manevra" name="manevra"></select>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="zona">Port / zonă</label>
+            <select id="zona" name="zona"></select>
+          </div>
+          <div class="field">
+            <span class="lbl">Moment</span>
+            <div class="seg" role="radiogroup" aria-label="Zi sau noapte">
+              <label><input type="radio" name="ziNoapte" value="zi" checked><span>Zi</span></label>
+              <label><input type="radio" name="ziNoapte" value="noapte"><span>Noapte</span></label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="dana">Dana de manevră <span class="opt">nr.</span></label>
+            <input id="dana" name="dana" type="text" inputmode="numeric" placeholder="ex. 80">
+          </div>
+          <div class="field">
+            <label for="lungimeDana">Lungime dană (m) <span class="opt">opțional</span></label>
+            <input id="lungimeDana" name="lungimeDana" type="number" inputmode="decimal" step="0.1" min="0">
+          </div>
+        </div>
+        <label class="check"><input type="checkbox" name="danaFundBazin"> Dană de fund de bazin</label>
+        <label class="check"><input type="checkbox" name="danaCapatMol"> Dană în capăt de mol</label>
+        <label class="check"><input type="checkbox" name="dana79Tanc"> În dana 79 se operează un tanc petrolier</label>
+        <div class="row">
+          <div class="field" data-show="tragere">
+            <label for="distantaTragere">Distanța de tragere pe parâme (m)</label>
+            <input id="distantaTragere" name="distantaTragere" type="number" inputmode="decimal" step="1" min="0">
+          </div>
+          <div class="field">
+            <label for="adancime">Adâncime pe traseu (m) <span class="opt">opțional</span></label>
+            <input id="adancime" name="adancime" type="number" inputmode="decimal" step="0.1" min="0">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="card">
+        <legend>3 · Condiții</legend>
+        <div class="field">
+          <label for="vant">Vânt – viteza medie din ultimele 10 minute (Nd)</label>
+          <input id="vant" name="vant" type="number" inputmode="decimal" step="0.5" min="0">
+        </div>
+        <label class="check"><input type="checkbox" name="vizibilitateAfectata"> Vizibilitatea afectează manevra în siguranță</label>
+        <label class="check"><input type="checkbox" name="hidrometeoNefavorabile"> Condiții hidrometeorologice nefavorabile</label>
+        <div class="field" data-show="doc">
+          <label for="spatiuSuficient">Spațiu suficient în vecinătatea docului</label>
+          <select id="spatiuSuficient" name="spatiuSuficient" data-tri></select>
+        </div>
+        <div class="field" data-show="plecare">
+          <label for="aprobareCapSef">Plecare aprobată excepțional de Căpitanul Șef (vânt peste limită)</label>
+          <select id="aprobareCapSef" name="aprobareCapSef" data-tri></select>
+        </div>
+      </fieldset>
+
+      <fieldset class="card">
+        <legend>4 · Pilotaj și remorcaj</legend>
+        <div class="field">
+          <label for="pilot">Pilot solicitat / la bord (buletin de pilotaj)</label>
+          <select id="pilot" name="pilot" data-tri></select>
+        </div>
+        <span class="lbl">Remorchere disponibile – tracțiune la cârlig (tf)</span>
+        <div class="row4">
+          <input name="rem1" type="number" inputmode="decimal" min="0" step="1" placeholder="R1" aria-label="Remorcher 1 (tf)">
+          <input name="rem2" type="number" inputmode="decimal" min="0" step="1" placeholder="R2" aria-label="Remorcher 2 (tf)">
+          <input name="rem3" type="number" inputmode="decimal" min="0" step="1" placeholder="R3" aria-label="Remorcher 3 (tf)">
+          <input name="rem4" type="number" inputmode="decimal" min="0" step="1" placeholder="R4" aria-label="Remorcher 4 (tf)">
+        </div>
+        <div class="field">
+          <label for="remorcherUnMotor">Există remorchere cu un singur motor, o cârmă și o elice?</label>
+          <select id="remorcherUnMotor" name="remorcherUnMotor" data-tri></select>
+        </div>
+        <div data-show="scutire" class="sub-block">
+          <p class="hint">Scutire de un remorcher (Art. 126 alin. (3))</p>
+          <div class="field">
+            <label for="scutHidro">Condițiile hidrometeorologice permit</label>
+            <select id="scutHidro" name="scutHidro" data-tri></select>
+          </div>
+          <div class="field">
+            <label for="scutComandant">Comandantul (după consultarea pilotului) a hotărât că manevra e sigură și a informat în prealabil ANR/VTS/Căpitănia</label>
+            <select id="scutComandant" name="scutComandant" data-tri></select>
+          </div>
+        </div>
+        <div class="field" data-show="anrRem">
+          <label for="aprobareANRRemorcaj">Necesar de remorcare aprobat de ANR / Căpitanul Șef (Midia, Mangalia)</label>
+          <select id="aprobareANRRemorcaj" name="aprobareANRRemorcaj" data-tri></select>
+        </div>
+      </fieldset>
+
+      <details class="card" id="detFormalitati">
+        <summary>5 · Formalități și documente <span class="opt">se afișează cele aplicabile</span></summary>
+        <div id="adminFields"></div>
+        <div data-show="arrival" class="sub-block">
+          <p class="hint">Situații speciale de intrare (Art. 38)</p>
+          <div id="situatii"></div>
+          <div class="field">
+            <label for="autorizareSpeciala">Autorizare specială a ANR / administrației portuare obținută</label>
+            <select id="autorizareSpeciala" name="autorizareSpeciala" data-tri></select>
+          </div>
+        </div>
+      </details>
+
+      <details class="card" id="detOperare">
+        <summary>6 · Operare la dană – mărfuri periculoase (Art. 101) <span class="opt">opțional</span></summary>
+        <label class="check"><input type="checkbox" name="verificaOperare"> Verifică și condițiile de operare la dană</label>
+        <div data-show="operare">
+          <div class="field">
+            <label for="directieVant">Direcția vântului față de dană</label>
+            <select id="directieVant" name="directieVant">
+              <option value="">— alegeți —</option>
+              <option value="dinspre_dana">Dinspre postul de acostare (max. forța 4)</option>
+              <option value="vest_est">De vest sau est – prova/pupa (max. forța 6)</option>
+              <option value="sud">De sud (max. forța 5, fără descărcări electrice)</option>
+            </select>
+          </div>
+          <div class="field" data-show="sud">
+            <label for="descarcariElectrice">Descărcări electrice în atmosferă (în timpul ploii)</label>
+            <select id="descarcariElectrice" name="descarcariElectrice" data-tri></select>
+          </div>
+          <div class="field">
+            <label for="impamantare">Legătură de împământare cu uscatul</label>
+            <select id="impamantare" name="impamantare" data-tri></select>
+          </div>
+          <div class="field">
+            <label for="fireWire">Legături „fire wire” la prova și la pupa (obligatorii la ≥ 20.000 tdw)</label>
+            <select id="fireWire" name="fireWire" data-tri></select>
+          </div>
+        </div>
+      </details>
+    </form>
+
+    <aside class="results" id="results" aria-live="polite">
+      <div id="resultsInner"></div>
+    </aside>
+  </main>
+
+  <footer class="wrap foot">
+    <p>Sursa regulilor: Regulamentul Portuar al porturilor maritime românești aflate în administrarea CN „Administrația Porturilor Maritime” SA Constanța, ediția 2025 (art. 19, 20, 34, 36, 38–44, 47, 48, 64, 101, 102, 123–140). Interpretările sunt marcate în rezultate.</p>
+  </footer>
+
+  <script src="src/rules.js"></script>
+  <script src="src/app.js"></script>
+</body>
+</html>
