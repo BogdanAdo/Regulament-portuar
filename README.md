@@ -49,6 +49,7 @@ index.html            interfața
 src/rules.js          motorul de reguli (browser + Node), fiecare regulă cu articolul citat
 src/app.js            logica interfeței
 src/styles.css        stiluri (temă luminoasă/întunecată, tipărire)
+icons/                pictograma aplicației (SVG + PNG) și manifest.webmanifest (adăugare pe ecranul principal)
 docs/regulament-portuar-2025.pdf   regulamentul (scan); articolele citate se deschid aici, într-o fereastră nouă, la pagina potrivită
 tests/rules.test.js   teste automate (node:test)
 .github/workflows/    CI (teste) și publicare pe GitHub Pages
