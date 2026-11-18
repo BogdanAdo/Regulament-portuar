@@ -138,7 +138,10 @@
   function artChip(a) {
     var m = /^Art\. (\d+)/.exec(a);
     var tip = m && R.ARTICOLE['Art. ' + m[1]] ? R.ARTICOLE['Art. ' + m[1]] : '';
-    return '<span class="art"' + (tip ? ' title="' + esc(tip) + '"' : '') + '>' + esc(a) + '</span>';
+    var href = R.linkArticol(a);
+    if (!href) return '<span class="art"' + (tip ? ' title="' + esc(tip) + '"' : '') + '>' + esc(a) + '</span>';
+    return '<a class="art" href="' + esc(href) + '" target="_blank" rel="noopener"' +
+      ' title="' + esc((tip ? tip + ' ' : '') + '(se deschide regulamentul într-o fereastră nouă)') + '">' + esc(a) + ' ↗</a>';
   }
 
   function renderItem(i) {
@@ -164,7 +167,7 @@
     if (rez.verdict === 'incomplet') {
       var inc = rez.items.filter(function (i) { return i.cat === 'general'; });
       h += '<div class="empty">' + (inc.length ? esc(inc[0].mesaj) : 'Completați datele navei și ale manevrei.') +
-        '<br>Puteți porni de la un exemplu din secțiunea „Exemple rapide”.</div></div>';
+        '</div></div>';
       out.innerHTML = h;
       return;
     }
@@ -261,55 +264,8 @@
     Array.prototype.forEach.call(out.querySelectorAll('details'), function (d) { d.open = true; });
   });
 
-  /* ---------------- exemple ---------------- */
-  var toateDa = {};
-  R.ADMIN_CHECKS.forEach(function (c) { toateDa[c.id] = 'da'; });
-
-  var EXEMPLE = [
-    {
-      nume: 'Cargou 180 m – sosire ziua (conform)',
-      v: { tipNava: 'marfa', manevra: 'sosire', zona: 'constanta', ziNoapte: 'zi', loa: 180, pescaj: 9, dana: '40', vant: 10, pilot: 'da', remorchere: [20, 20, 10], remorcherUnMotor: 'nu', admin: toateDa },
-    },
-    {
-      nume: 'Portcontainer 300 m – sosire noaptea',
-      v: { tipNava: 'container', manevra: 'sosire', zona: 'constanta', ziNoapte: 'noapte', loa: 300, pescaj: 14, dana: '12', vant: 12, pilot: 'da', remorchere: [40, 40, 20], remorcherUnMotor: 'nu' },
-    },
-    {
-      nume: 'Tanc petrolier – plecare noaptea din dana 81',
-      v: { tipNava: 'tanc_petrolier', manevra: 'plecare', zona: 'constanta', ziNoapte: 'noapte', loa: 240, pescaj: 17, dana: '81', dana79Tanc: true, marfaPericuloasa: true, vant: 8, pilot: 'da', remorchere: [40, 20, 20], remorcherUnMotor: 'nu' },
-    },
-    {
-      nume: 'Ro-Pax cu propulsoare – Midia, vânt 24 Nd',
-      v: { tipNava: 'roro_pasageri', manevra: 'sosire', zona: 'midia', ziNoapte: 'zi', loa: 200, pescaj: 6.5, propulsoareTransversale: true, dana: '3', vant: 24, pilot: 'da', remorchere: [] },
-    },
-    {
-      nume: 'Cargou 120 m – doc șantier, vânt 15 Nd',
-      v: { tipNava: 'marfa', manevra: 'doc_santier', zona: 'constanta', ziNoapte: 'zi', loa: 120, pescaj: 5, vant: 15, spatiuSuficient: 'nu', pilot: 'da', remorchere: [5], remorcherUnMotor: 'nu' },
-    },
-    {
-      nume: 'Tragere pe parâme – 100 m la LOA 160 m',
-      v: { tipNava: 'marfa', manevra: 'tragere', zona: 'constanta', ziNoapte: 'zi', loa: 160, pescaj: 7, distantaTragere: 100, vant: 6, pilot: 'nu', remorchere: [20, 10] },
-    },
-  ];
-
-  function buildPresets() {
-    var box = document.getElementById('presets');
-    box.innerHTML = EXEMPLE.map(function (x, i) {
-      return '<button type="button" class="chip" data-ex="' + i + '">' + esc(x.nume) + '</button>';
-    }).join('');
-    box.addEventListener('click', function (e) {
-      var i = e.target && e.target.getAttribute && e.target.getAttribute('data-ex');
-      if (i === null || i === undefined) return;
-      writeForm(EXEMPLE[parseInt(i, 10)].v);
-      render();
-      var r = document.getElementById('results');
-      if (r && r.scrollIntoView && window.matchMedia('(max-width: 979px)').matches) r.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  }
-
   /* ---------------- inițializare ---------------- */
   build();
-  buildPresets();
 
   var salvat = load();
   if (salvat) writeForm(salvat);

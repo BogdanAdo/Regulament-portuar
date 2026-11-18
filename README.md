@@ -5,6 +5,7 @@ Aplicație web (HTML + JavaScript, fără dependențe și fără server) care ve
 
 Utilizatorul introduce tipul navei, LOA, pescajul, tipul manevrei (sosire, plecare, mutare etc.), dana, zi/noapte, vântul,
 remorcherele disponibile ș.a., iar aplicația afișează, pentru fiecare regulă, dacă este îndeplinită, cu **articolul de regulament** citat.
+Clic pe un articol citat deschide regulamentul (PDF) într-o fereastră nouă, direct la pagina articolului.
 
 > **Instrument de sprijin.** Nu înlocuiește regulamentul în vigoare, indicațiile Autorității Navale Române / VTS / Căpităniei de Port,
 > ale pilotului sau decizia comandantului. Verificați întotdeauna versiunea actuală a regulamentului.
@@ -48,6 +49,7 @@ index.html            interfața
 src/rules.js          motorul de reguli (browser + Node), fiecare regulă cu articolul citat
 src/app.js            logica interfeței
 src/styles.css        stiluri (temă luminoasă/întunecată, tipărire)
+docs/regulament-portuar-2025.pdf   regulamentul (scan); articolele citate se deschid aici, într-o fereastră nouă, la pagina potrivită
 tests/rules.test.js   teste automate (node:test)
 .github/workflows/    CI (teste) și publicare pe GitHub Pages
 ```
@@ -62,6 +64,9 @@ Testele acoperă pragurile din tabelul de remorcaj, limitele de vânt (inclusiv 
 scutirile, formalitățile și condițiile din Art. 101. Cerința: Node.js ≥ 18, fără pachete externe.
 
 ## Actualizarea regulilor
+
+Dacă înlocuiți PDF-ul din `docs/`, verificați și harta `REGULAMENT.pagini` din `src/rules.js` (articol → pagină).
+
 
 Dacă regulamentul se modifică, editați `src/rules.js`: tabelul de remorcaj (`tabelRemorcaj`), pragurile de vânt (secțiunea
 „Art. 34 alin. (3)”), listele de dane și formalitățile (`ADMIN_CHECKS`). Actualizați apoi testele corespunzătoare.

@@ -352,3 +352,17 @@ test('raportul text conține rezultatul și articolele', () => {
   assert.match(t, /Art\. 126/);
   assert.match(t, /2026-11-18/);
 });
+
+test('toate articolele din ARTICOLE au pagină în regulament și link', () => {
+  Object.keys(R.ARTICOLE).forEach((k) => {
+    assert.ok(R.linkArticol(k), 'lipsește pagina pentru ' + k);
+  });
+  assert.equal(R.linkArticol('Art. 126 alin. (2) lit. g)'), 'docs/regulament-portuar-2025.pdf#page=35');
+  assert.equal(R.linkArticol('Art. 34 alin. (2) lit. a)'), 'docs/regulament-portuar-2025.pdf#page=11');
+  assert.equal(R.linkArticol('Art. 999'), null);
+});
+
+test('toate articolele citate de reguli au link', () => {
+  const rez = R.evaluate({ tipNava: 'tanc_petrolier', manevra: 'sosire', loa: 240, pescaj: 17, ziNoapte: 'noapte', dana: '81', dana79Tanc: true, vant: 40, vizibilitateAfectata: true, verificaOperare: true, directieVant: 'sud', dwt: 50000, sit_carantina: true, remorchere: [20] });
+  rez.items.forEach((i) => i.art.forEach((a) => assert.ok(R.linkArticol(a), 'fără link: ' + a)));
+});

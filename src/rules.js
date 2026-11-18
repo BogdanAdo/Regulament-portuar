@@ -133,6 +133,24 @@
     'Art. 140': 'Căpitanul șef de port poate cere întreruperea remorcajului în anumite situații.',
   };
 
+  // Fișierul regulamentului (scan) și pagina la care începe fiecare articol citat.
+  const REGULAMENT = {
+    fisier: 'docs/regulament-portuar-2025.pdf',
+    pagini: {
+      19: 9, 20: 9, 29: 11, 34: 11, 35: 12, 36: 12, 38: 12, 39: 13, 40: 13, 42: 14, 43: 14, 44: 15,
+      47: 15, 48: 15, 49: 15, 64: 19, 101: 29, 102: 29, 123: 34, 124: 35, 125: 35, 126: 35, 127: 36,
+      128: 37, 129: 37, 130: 38, 131: 38, 132: 38, 133: 39, 134: 39, 135: 39, 136: 39, 137: 40,
+      138: 40, 139: 40, 140: 40,
+    },
+  };
+
+  /** Adresa PDF-ului regulamentului, deschis la pagina articolului din referință (ex. „Art. 126 alin. (2)”). */
+  function linkArticol(ref) {
+    const m = /^Art\. (\d+)/.exec(ref);
+    const pg = m ? REGULAMENT.pagini[parseInt(m[1], 10)] : null;
+    return pg ? REGULAMENT.fisier + '#page=' + pg : null;
+  }
+
   /* ------------------------------------------------------------------ */
   /* Utilitare                                                           */
   /* ------------------------------------------------------------------ */
@@ -770,6 +788,8 @@
     SITUATII_ART38,
     ADMIN_CHECKS,
     ARTICOLE,
+    REGULAMENT,
+    linkArticol,
     CATEGORII,
     ENTRY_EXIT,
     ARRIVAL,
